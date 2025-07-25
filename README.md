@@ -1,4 +1,4 @@
-# CCMS ( Concrete & Management System )
+# CCMS ( Concrete & Cement Management System )
 **A standalone, report-creating desktop app.**
 ## Background
 **Reporting and documenting daily progress in construction projects is crucial for accurate expenditure calculation and effective progress evaluation. The application enables the user to track consumption and production of the following:**
