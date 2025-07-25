@@ -50,8 +50,3 @@
   <img width="780" height="410" alt="image" src="https://github.com/user-attachments/assets/54000e7d-6819-42f2-9bd3-5338dad0350f" />
 </p>
 
-
-* Part of the Automatically Generated Daily Fuel Consumption Report:
-<p align="center">
- <img width="869" height="427" alt="image" src="https://github.com/user-attachments/assets/e9b7c933-1b58-400c-8ea9-5d4c1fae68c4" />
-</p> 
