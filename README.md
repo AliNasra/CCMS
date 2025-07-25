@@ -1,2 +1,2 @@
 # CCMS
-A Standalone, Docx-Creating Desktop Application
+A Standalone, Report-Creating Desktop Application
