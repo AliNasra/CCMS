@@ -1,0 +1,260 @@
+﻿<Page x:Class="WpfApp2.Views.Concrete.FetchConcreteRecords"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:WpfApp2.Views.Concrete"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      SizeChanged="Page_SizeChanged"
+      Title="FetchConcreteRecords">
+
+    <Grid Background="{Binding Source={StaticResource AppSettings}, Path=BackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="5*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <!-- Header -->
+
+        <Label Content="ابحث فى سجلات تمام الخرسانة"
+        Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+        VerticalAlignment="Center" HorizontalAlignment="Center"
+        FontFamily="Arabic Typesetting"
+        FontSize="40" FontWeight="ExtraBold"
+        Foreground="{Binding Source={StaticResource AppSettings}, Path=TitleColor}" />
+
+        <Border Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="0.5*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="0.5*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="0.5*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="0.5*" />
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="7"
+                        CornerRadius="5" BorderBrush="Orange" BorderThickness="2"
+                        Background="{Binding Source={StaticResource AppSettings}, Path=LabelColor}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                        Margin="{Binding ItemMargin}">
+                    <Viewbox Stretch="Uniform" HorizontalAlignment="Right">
+                        <Label Content=":الخلاطة"
+                        Foreground="Black"
+                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                        FontFamily="Arabic Typesetting" FontWeight="ExtraBold" />
+                    </Viewbox>
+                </Border>
+
+                <Border Grid.Column="6"
+                        CornerRadius="5" BorderBrush="Black" BorderThickness="2"
+                        Background="White" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                        Margin="{Binding ItemMargin}">
+                    <ComboBox ItemsSource="{Binding mixerNames}" 
+                              SelectedItem="{Binding mixerName, UpdateSourceTrigger=PropertyChanged}" 
+                              HorizontalContentAlignment="Center" 
+                              VerticalContentAlignment="Center" 
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              FlowDirection="RightToLeft"
+                              FontFamily="{Binding Source={StaticResource AppSettings}, Path=TextFont}"
+                              FontSize="{Binding Source={StaticResource AppSettings}, Path=TextFontSize}" 
+                    >
+                        <ComboBox.ItemContainerStyle>
+                            <Style TargetType="ComboBoxItem">
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="Foreground" Value="{Binding Source={StaticResource AppSettings}, Path=TextColor}"/>
+                                <Setter Property="Padding" Value="5"/>
+                                <Setter Property="Margin" Value="2"/>
+                            </Style>
+                        </ComboBox.ItemContainerStyle>
+                    </ComboBox>
+                </Border>
+
+                <Border Grid.Column="5"
+                         CornerRadius="5" BorderBrush="Orange" BorderThickness="2"
+                         Background="{Binding Source={StaticResource AppSettings}, Path=LabelColor}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                         Margin="{Binding ItemMargin}">
+                    <Viewbox Stretch="Uniform" HorizontalAlignment="Right">
+                        <Label Content=":العنصر"
+                        Foreground="Black"
+                        HorizontalAlignment="Right" VerticalAlignment="Stretch"
+                        FontFamily="Arabic Typesetting" FontWeight="ExtraBold" />
+                    </Viewbox>
+                </Border>
+
+                <Border Grid.Column="4"
+                        CornerRadius="5" BorderBrush="Black" BorderThickness="2"
+                        Background="White" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                        Margin="{Binding ItemMargin}">
+                    <TextBox    Text="{Binding project, UpdateSourceTrigger=PropertyChanged}" Background="Transparent"
+                                Margin="{Binding ItemMargin}"
+                                TextAlignment="left"
+                                FlowDirection="RightToLeft"
+                                FontWeight="Bold" FontFamily="{Binding Source={StaticResource AppSettings}, Path=TextFont}"
+                                FontSize="{Binding Source={StaticResource AppSettings}, Path=TextFontSize}" 
+                                VerticalContentAlignment="Center" HorizontalContentAlignment="Right"
+                                BorderThickness="0" IsReadOnly="False"
+                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                    />
+                </Border>
+                <Border Grid.Column="3"
+                        CornerRadius="5" BorderBrush="Orange" BorderThickness="2"
+                        Background="{Binding Source={StaticResource AppSettings}, Path=LabelColor}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                        Margin="{Binding ItemMargin}">
+                    <Viewbox Stretch="Uniform" HorizontalAlignment="Right">
+                        <Label Content=":الجهة المستفيدة"
+                                Foreground="Black"
+                                HorizontalAlignment="Right" VerticalAlignment="Stretch"
+                                FontFamily="Arabic Typesetting" FontWeight="ExtraBold" />
+                    </Viewbox>
+                </Border>
+                <Border Grid.Column="2"
+                        CornerRadius="5" BorderBrush="Black" BorderThickness="2"
+                        Background="White" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                        Margin="{Binding ItemMargin}"
+                        >
+                    <ComboBox ItemsSource="{Binding companyNames}" 
+                              SelectedItem="{Binding company, UpdateSourceTrigger=PropertyChanged}" 
+                              HorizontalContentAlignment="Center" 
+                              VerticalContentAlignment="Center" 
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              FlowDirection="RightToLeft"
+                              FontFamily="{Binding Source={StaticResource AppSettings}, Path=TextFont}"
+                              FontSize="{Binding Source={StaticResource AppSettings}, Path=TextFontSize}" 
+                    />
+                </Border>
+                <Border Grid.Column="1"
+                        CornerRadius="5" BorderBrush="Orange" BorderThickness="2"
+                        Background="{Binding Source={StaticResource AppSettings}, Path=LabelColor}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                        Margin="{Binding ItemMargin}">
+                    <Viewbox Stretch="Uniform" HorizontalAlignment="Right">
+                        <Label Content=":نوع الخرسانة"
+                Foreground="Black"
+                HorizontalAlignment="Right" VerticalAlignment="Stretch"
+                FontFamily="Arabic Typesetting" FontWeight="ExtraBold" />
+                    </Viewbox>
+                </Border>
+                <Border Grid.Column="0"
+                    CornerRadius="5" BorderBrush="Black" BorderThickness="2"
+                    Background="White" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                    Margin="{Binding ItemMargin}">
+                    <ComboBox ItemsSource="{Binding concreteTypes}" 
+                              SelectedItem="{Binding concreteType, UpdateSourceTrigger=PropertyChanged}" 
+                              HorizontalContentAlignment="Center" 
+                              VerticalContentAlignment="Center" 
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              FlowDirection="RightToLeft"
+                              FontFamily="{Binding Source={StaticResource AppSettings}, Path=TextFont}"
+                              FontSize="{Binding Source={StaticResource AppSettings}, Path=TextFontSize}" 
+                    />
+                </Border>
+            </Grid>
+        </Border>
+        <Border Grid.Row='2'  CornerRadius="5" BorderBrush="Yellow" BorderThickness="2" Margin="{Binding ItemMargin}">
+            <DataGrid x:Name="FuelRecordGrid"
+                ColumnHeaderHeight="30"
+                RowHeight="35"
+                GridLinesVisibility="All"
+                AlternatingRowBackground="LightGray"
+                Background="White" 
+                BorderBrush="DarkGray" 
+                BorderThickness="1" 
+                FontFamily="{Binding Source={StaticResource AppSettings}, Path=TextFont}"
+                FontSize="{Binding Source={StaticResource AppSettings}, Path=TextFontSize}" 
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                AutoGenerateColumns="False"
+                IsReadOnly="True"
+                HeadersVisibility="All"
+                ItemsSource="{Binding concreteRecords}">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="تاريخ القيد" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock 
+                                    Text="{Binding recordDate, Converter={StaticResource ArabicGregorianDateOnlyConverter}}"
+                                    FlowDirection ="RightToLeft"
+                                    TextAlignment="Center"
+                                    />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTextColumn Header="الجهة المستفيدة" Binding="{Binding company}" Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FlowDirection" Value="RightToLeft"/>
+                                <Setter Property="TextAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="العنصر" Binding="{Binding project}" Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FlowDirection" Value="RightToLeft"/>
+                                <Setter Property="TextAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="نوع الخرسانة" Binding="{Binding isReinforcedConcrete}" Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FlowDirection" Value="RightToLeft"/>
+                                <Setter Property="TextAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="الكمية المنتجة" Binding="{Binding producedConcreteAmount}" Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FlowDirection" Value="RightToLeft"/>
+                                <Setter Property="TextAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="اسم الخلاطة" Binding="{Binding mixerName}" Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FlowDirection" Value="RightToLeft"/>
+                                <Setter Property="TextAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#FF2C3E50"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    </Style>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="FontSize" Value="18"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="FontFamily" Value="Arabic Typesetting"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="HorizontalAlignment" Value="Center"/>
+
+                    </Style>
+                </DataGrid.Resources>
+            </DataGrid>
+        </Border>
+        <Border Grid.Row="3"
+                CornerRadius="5" BorderBrush="Yellow" BorderThickness="2"
+                Background="{Binding Source={StaticResource AppSettings}, Path=ButtonColor}" VerticalAlignment="Stretch" HorizontalAlignment="Left"
+                Width="{Binding ButtonWidth}" Margin="{Binding ReturnButtonMargin}">
+                <Button Content="رجوع"
+                        FontFamily="Arabic Typesetting" FontWeight="Bold"
+                        FontSize ="25" Background="Transparent" BorderThickness="0"
+                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                        Click="Back_Click" />
+        </Border>
+    </Grid>
+</Page>

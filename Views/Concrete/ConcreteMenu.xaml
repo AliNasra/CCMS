@@ -1,0 +1,41 @@
+﻿<Page x:Class="WpfApp2.Views.Concrete.ConcreteMenu"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:WpfApp2.Views.Concrete"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      SizeChanged="Page_SizeChanged"
+      Title="ConcreteMenu">
+
+    <Grid Background="{Binding Source={StaticResource AppSettings}, Path=BackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Label Content="تمام الخرسانة" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"  HorizontalAlignment="Center"  VerticalAlignment="Center" FontFamily="Arabic Typesetting" FontSize="50" Foreground="{Binding Source={StaticResource AppSettings}, Path=TitleColor}" FontWeight="Bold"/>
+        <Border BorderBrush="#FFFDB900" Grid.Row="1" Grid.Column="0" BorderThickness="3,3,3,3" Width="{Binding ButtonWidth}" Height="{Binding ButtonHeight}"  CornerRadius="5" Background="{Binding Source={StaticResource AppSettings}, Path=ButtonColor}" Margin = "{Binding ButtonMargin}">
+            <Button Content="إضافة تمام الخرسانة بالمتر المكعب" FontFamily="Arabic Typesetting" FontSize="36" FontWeight="Bold" Background="Transparent" BorderThickness="0" Click="AddConcrete_Click" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="DarkBlue"/>
+        </Border>
+        <Border BorderBrush="#FFFDB900" Grid.Row="1" Grid.Column="1" BorderThickness="3,3,3,3" Width="{Binding ButtonWidth}" Height="{Binding ButtonHeight}"  CornerRadius="5" Background="{Binding Source={StaticResource AppSettings}, Path=ButtonColor}" Margin = "{Binding ButtonMargin}">
+            <Button Content="إضافة تمام الخرسانة بالمتر الطولى" FontFamily="Arabic Typesetting" FontSize="36" FontWeight="Bold" Background="Transparent" BorderThickness="0" Click="AddWallRecord_Click" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="DarkBlue"/>
+        </Border>
+        <Border BorderBrush="#FFFDB900" Grid.Row="2" Grid.Column="0" BorderThickness="3,3,3,3" Width="{Binding ButtonWidth}" Height="{Binding ButtonHeight}"  CornerRadius="5" Background="{Binding Source={StaticResource AppSettings}, Path=ButtonColor}" Margin = "{Binding ButtonMargin}">
+            <Button Content="عرض تمام الخرسانة بيانياَ" FontFamily="Arabic Typesetting" FontSize="36" FontWeight="Bold" Background="Transparent" BorderThickness="0" Click="DisplayConcrete_Click" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="DarkBlue"/>
+        </Border>
+        <Border BorderBrush="#FFFDB900" Grid.Row="2" Grid.Column="1" BorderThickness="3,3,3,3" Width="{Binding ButtonWidth}" Height="{Binding ButtonHeight}" CornerRadius="5" Background="{Binding Source={StaticResource AppSettings}, Path=ButtonColor}" Margin = "{Binding ButtonMargin}">
+            <Button Content="البحث فى بيانات تمام الخرسانة" FontFamily="Arabic Typesetting" FontSize="36" FontWeight="Bold" Background="Transparent" BorderThickness="0" Click="FetchConcreteRecord" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Foreground="DarkBlue"/>
+        </Border>
+        <Border BorderBrush="#FFFDB900" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" BorderThickness="3,3,3,3" Width="{Binding ButtonWidth}" Height="{Binding ButtonHeight}" CornerRadius="5" Background="{Binding Source={StaticResource AppSettings}, Path=ButtonColor}" Margin = "{Binding ButtonMargin}">
+            <Button Content="إرجع" FontFamily="Arabic Typesetting" FontSize="36" FontWeight="Bold" Background="Transparent" BorderThickness="0" Click="Back_Click" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="DarkBlue"/>
+        </Border>
+
+    </Grid>
+</Page>

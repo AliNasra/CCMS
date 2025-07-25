@@ -1,0 +1,361 @@
+﻿<Page x:Class="WpfApp2.Views.Concrete.AddWallRecord"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:WpfApp2.Views.Concrete"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      SizeChanged="Page_SizeChanged"
+      Title="AddWallRecord">
+
+    <Grid Background="{Binding Source={StaticResource AppSettings}, Path=BackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Row 1 -->
+        <Label Content="تمام السور سابق الصب" Grid.Row="0"  HorizontalAlignment="Center"  VerticalAlignment="Center" FontFamily="Arabic Typesetting" FontSize="50" Foreground="{Binding Source={StaticResource AppSettings}, Path=TitleColor}" FontWeight="Bold"/>
+        <ComboBox Grid.Row="0" 
+              Width="{Binding ComboBoxWidth}" 
+              Height="{Binding ComboboxHeight}" 
+              HorizontalContentAlignment="Center" 
+              VerticalContentAlignment="Center"
+              HorizontalAlignment="Left"
+              VerticalAlignment="Bottom"
+              FontFamily="Segoe UI"
+              FontSize="14"
+              FontWeight="Bold"
+              Margin= "{Binding ItemMargin}"
+              ItemsSource="{Binding unitCount}" SelectedItem="{Binding selectedUnitCount}" >
+        </ComboBox>
+        <!-- Row 2 -->
+        <Border Grid.Row='1'  CornerRadius="5" BorderBrush="Yellow" BorderThickness="2" Margin="{Binding ItemMargin}">
+            <DataGrid x:Name="PreCastWallProgress"
+                    ColumnHeaderHeight="30"
+                    RowHeight="35"
+                    GridLinesVisibility="All"
+                    AlternatingRowBackground="LightGray"
+                    Background="White" 
+                    BorderBrush="DarkGray" 
+                    BorderThickness="1" 
+                    FontFamily="{Binding Source={StaticResource AppSettings}, Path=TextFont}"
+                    FontSize="{Binding Source={StaticResource AppSettings}, Path=TextFontSize}" 
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    VerticalAlignment="Stretch"
+                    AutoGenerateColumns="False"
+                    IsReadOnly="False"
+                    HeadersVisibility="All"
+                    CanUserAddRows="False"
+                    ItemsSource="{Binding WallRecords}">
+
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="المتبقى" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding toBeAccomplished, UpdateSourceTrigger=PropertyChanged}" 
+                                     HorizontalContentAlignment="Center" 
+                                     IsReadOnly="False"
+                                     VerticalContentAlignment="Center" 
+                                     HorizontalAlignment="Stretch"
+                                     VerticalAlignment="Stretch"
+                                     TextAlignment="left"
+                                     FlowDirection="RightToLeft"
+                                     FontFamily="{Binding Source={StaticResource AppSettings}, Path=TextFont}"
+                                     FontSize="{Binding Source={StaticResource AppSettings}, Path=TextFontSize}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="إجمالى ما تم تنفيذه" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding totalAccomplished, UpdateSourceTrigger=PropertyChanged}" 
+                                     HorizontalContentAlignment="Center" 
+                                     IsReadOnly="False"
+                                     VerticalContentAlignment="Center" 
+                                     HorizontalAlignment="Stretch"
+                                     VerticalAlignment="Stretch"
+                                     TextAlignment="left"
+                                     FlowDirection="RightToLeft"
+                                     FontFamily="{Binding Source={StaticResource AppSettings}, Path=TextFont}"
+                                     FontSize="{Binding Source={StaticResource AppSettings}, Path=TextFontSize}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="المنفذ اليوم" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding accomplishedToday, UpdateSourceTrigger=PropertyChanged}" 
+                                     HorizontalContentAlignment="Center" 
+                                     IsReadOnly="False"
+                                     VerticalContentAlignment="Center" 
+                                     HorizontalAlignment="Stretch"
+                                     VerticalAlignment="Stretch"
+                                     TextAlignment="left"
+                                     FlowDirection="RightToLeft"
+                                     FontFamily="{Binding Source={StaticResource AppSettings}, Path=TextFont}"
+                                     FontSize="{Binding Source={StaticResource AppSettings}, Path=TextFontSize}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="السابق تنفيذه" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding previouslyAccomplished, UpdateSourceTrigger=PropertyChanged}" 
+                                             HorizontalContentAlignment="Center" 
+                                             VerticalContentAlignment="Center" 
+                                             HorizontalAlignment="Stretch"
+                                             VerticalAlignment="Stretch"
+                                             TextAlignment="left"
+                                             FlowDirection="RightToLeft"
+                                             FontFamily="{Binding Source={StaticResource AppSettings}, Path=TextFont}"
+                                             FontSize="{Binding Source={StaticResource AppSettings}, Path=TextFontSize}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="المخطط تنفيذه" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding plannedLength, UpdateSourceTrigger=PropertyChanged}"
+                                             HorizontalContentAlignment="Center" 
+                                             VerticalContentAlignment="Center" 
+                                             HorizontalAlignment="Stretch"
+                                             VerticalAlignment="Stretch"
+                                             TextAlignment="left"
+                                             FlowDirection="RightToLeft"
+                                             FontFamily="{Binding Source={StaticResource AppSettings}, Path=TextFont}"
+                                             FontSize="{Binding Source={StaticResource AppSettings}, Path=TextFontSize}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="اسم الوحدة" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ComboBox ItemsSource="{Binding unitNames}" 
+                                      SelectedItem="{Binding unitName, UpdateSourceTrigger=PropertyChanged}" 
+                                      HorizontalContentAlignment="Center" 
+                                      VerticalContentAlignment="Center" 
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Stretch"
+                                      FontFamily="{Binding Source={StaticResource AppSettings}, Path=TextFont}"
+                                      FontSize="{Binding Source={StaticResource AppSettings}, Path=TextFontSize}" 
+                            >
+                                    <ComboBox.ItemContainerStyle>
+                                        <Style TargetType="ComboBoxItem">
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                            <Setter Property="Foreground" Value="{Binding Source={StaticResource AppSettings}, Path=TextColor}"/>
+                                            <Setter Property="Padding" Value="5"/>
+                                            <Setter Property="Margin" Value="2"/>
+                                        </Style>
+                                    </ComboBox.ItemContainerStyle>
+                                </ComboBox>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#FF2C3E50"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    </Style>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="FontSize" Value="18"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="FontFamily" Value="Arabic Typesetting"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="HorizontalAlignment" Value="Center"/>
+
+                    </Style>
+                </DataGrid.Resources>
+            </DataGrid>
+        </Border>
+
+        <!-- Row 3 -->
+
+        <Border Grid.Row='2'  CornerRadius="5" BorderBrush="Yellow" BorderThickness="2" Margin="{Binding ItemMargin}">
+            <DataGrid x:Name="TransportationStatus"
+            ColumnHeaderHeight="30"
+            RowHeight="35"
+            GridLinesVisibility="All"
+            AlternatingRowBackground="LightGray"
+            Background="White" 
+            BorderBrush="DarkGray" 
+            BorderThickness="1" 
+            FontFamily="{Binding Source={StaticResource AppSettings}, Path=TextFont}"
+            FontSize="{Binding Source={StaticResource AppSettings}, Path=TextFontSize}" 
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Center"
+            VerticalAlignment="Stretch"
+            AutoGenerateColumns="False"
+            IsReadOnly="False"
+            HeadersVisibility="All"
+            CanUserAddRows="False"
+            ItemsSource="{Binding WallRecords}">
+
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="المتبقى بالموقع" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding remainingOnSite, UpdateSourceTrigger=PropertyChanged}" 
+                                         FontFamily="{Binding Source={StaticResource AppSettings}, Path=TextFont}"
+                                         FontSize="{Binding Source={StaticResource AppSettings}, Path=TextFontSize}" 
+                                         HorizontalContentAlignment="Center" 
+                                         IsReadOnly="False"
+                                         VerticalContentAlignment="Center" 
+                                         HorizontalAlignment="Stretch"
+                                         VerticalAlignment="Stretch"
+                                         TextAlignment="left"
+                                         FlowDirection="RightToLeft"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="اجمالى ما تم نقله" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding totalTransported, UpdateSourceTrigger=PropertyChanged}" 
+                                         FontFamily="{Binding Source={StaticResource AppSettings}, Path=TextFont}"
+                                         FontSize="{Binding Source={StaticResource AppSettings}, Path=TextFontSize}" 
+                                         HorizontalContentAlignment="Center" 
+                                         IsReadOnly="False"
+                                         VerticalContentAlignment="Center" 
+                                         HorizontalAlignment="Stretch"
+                                         VerticalAlignment="Stretch"
+                                         TextAlignment="left"
+                                         FlowDirection="RightToLeft"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="ما تم نقله اليوم" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding transportedAmountToday, UpdateSourceTrigger=PropertyChanged}" 
+                                         FontFamily="{Binding Source={StaticResource AppSettings}, Path=TextFont}"
+                                         FontSize="{Binding Source={StaticResource AppSettings}, Path=TextFontSize}" 
+                                         HorizontalContentAlignment="Center" 
+                                         IsReadOnly="False"
+                                         VerticalContentAlignment="Center" 
+                                         HorizontalAlignment="Stretch"
+                                         VerticalAlignment="Stretch"
+                                         TextAlignment="left"
+                                         FlowDirection="RightToLeft"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="السابق نقله لمستودع المهمات" Width="1.5*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding previouslyTransported, UpdateSourceTrigger=PropertyChanged}"
+                                         FontFamily="{Binding Source={StaticResource AppSettings}, Path=TextFont}"
+                                         FontSize="{Binding Source={StaticResource AppSettings}, Path=TextFontSize}" 
+                                         HorizontalContentAlignment="Center" 
+                                         IsReadOnly="False"
+                                         VerticalContentAlignment="Center" 
+                                         HorizontalAlignment="Stretch"
+                                         VerticalAlignment="Stretch"
+                                         TextAlignment="left"
+                                         FlowDirection="RightToLeft"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    
+                    <DataGridTemplateColumn Header="اسم الوحدة" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ComboBox ItemsSource="{Binding unitNames}" 
+                                          SelectedItem="{Binding unitName, UpdateSourceTrigger=PropertyChanged}" 
+                                          FontFamily="{Binding Source={StaticResource AppSettings}, Path=TextFont}"
+                                          FontSize="{Binding Source={StaticResource AppSettings}, Path=TextFontSize}" 
+                                          HorizontalContentAlignment="Center" 
+                                          VerticalContentAlignment="Center" 
+                                          HorizontalAlignment="Stretch"
+                                          VerticalAlignment="Stretch"
+                                >
+                                    <ComboBox.ItemContainerStyle>
+                                        <Style TargetType="ComboBoxItem">
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                            <Setter Property="Foreground" Value="{Binding Source={StaticResource AppSettings}, Path=TextColor}"/>
+                                            <Setter Property="Padding" Value="5"/>
+                                            <Setter Property="Margin" Value="2"/>
+                                        </Style>
+                                    </ComboBox.ItemContainerStyle>
+                                </ComboBox>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#FF2C3E50"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    </Style>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="FontSize" Value="18"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="FontFamily" Value="Arabic Typesetting"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="HorizontalAlignment" Value="Center"/>
+
+                    </Style>
+                </DataGrid.Resources>
+            </DataGrid>
+        </Border>
+
+
+
+
+        <!-- Row 4 -->
+        <Border
+                Grid.Row="4"
+                CornerRadius="5"
+                BorderBrush="Yellow"
+                BorderThickness="2"
+                Background="{Binding Source={StaticResource AppSettings}, Path=ButtonColor}"
+                HorizontalAlignment = "Right"
+                VerticalAlignment   = "Center"
+                Height              = "{Binding ButtonHeight}"
+                Width               = "{Binding ButtonWidth}"
+                Margin="{Binding ItemMargin}">
+                <Button Content="حفظ"
+                        FontFamily="Arabic Typesetting"
+                        FontSize="25"
+                        FontWeight="Bold"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Click="Save_Click"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"/>
+        </Border>
+
+
+        <Border 
+                Grid.Row="4"
+                CornerRadius="5"
+                Background="{Binding Source={StaticResource AppSettings}, Path=ButtonColor}"
+                Margin="{Binding ItemMargin}"
+                Width="{Binding ButtonWidth}"
+                Height="{Binding ButtonHeight}"
+                BorderBrush="Yellow"
+                VerticalAlignment="Center"
+                HorizontalAlignment="left"
+                BorderThickness="2"
+        >
+            <Button Content="رجوع"
+                    FontFamily="Arabic Typesetting"
+                    FontSize="25"
+                    FontWeight="Bold"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Click="Back_Click"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"/>
+        </Border>
+    </Grid>
+</Page>
