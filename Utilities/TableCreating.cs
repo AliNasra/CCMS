@@ -364,7 +364,7 @@ namespace WpfApp2.Utilities
                     lastImportDate = depot.LastConsignmentDate.Date;
                     lastImportAmount = depot.LastimportedFuelAmount.ToString("N0");
                     consumedFuel = "صفر";
-                    remainingFuel = depot.currentReserve.ToString("N0");
+                    remainingFuel = depot.currentReserve == 0 ? "صفر" : depot.currentReserve.ToString("N0");
                     generalSumRemainingFuel += depot.currentReserve;
 
                 }
@@ -380,7 +380,7 @@ namespace WpfApp2.Utilities
                 lastImportDateString += "/";
                 lastImportDateString += " ";
                 lastImportDateString += $"{lastImportDate.Year}";
-                items = new List<string> { sumConcrete < epsilon ? "-" : $"{sumConcrete.ToString("G29")}", $"{lastImportDateString}", $"{lastImportAmount}", $"{remainingFuel}", $"{consumedFuel}", $"{depot.depotStorageCapacity.ToString("N0")}", $"‫{depot.depotName}‬", $"{rowCount}" };
+                items = new List<string> { sumConcrete < epsilon ? "-" : $"{sumConcrete.ToString("G29")}", $"{lastImportDateString}", $"{lastImportAmount}", $"{remainingFuel}", $"{consumedFuel}", $"{depot.depotStorageCapacity.ToString("N0")}", $"{depot.depotName}", $"{rowCount}" };
                 TableRow row = new TableRow();
                 for (int i = 0; i < items.Count; i++)
                 {
