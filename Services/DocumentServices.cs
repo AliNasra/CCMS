@@ -108,7 +108,7 @@ namespace WpfApp2.Services
                 
                 Paragraph spacer = new Paragraph(
                     new ParagraphProperties(
-                        new SpacingBetweenLines { Before = "360" } // 360 = 0.25 inch
+                        new SpacingBetweenLines { Before = "180" } // 180 = 0.125 inch
                     )
                 );
                 
@@ -493,7 +493,9 @@ namespace WpfApp2.Services
                             new Indentation { Left = "0", Right = $"{1440 * 8}", Hanging = "0" },
                             new SpacingBetweenLines
                             {
-                                Before = "360" // 360 twips = 0.25 inch
+                                Before = "180",
+                                Line = "192",
+                                LineRule = LineSpacingRuleValues.Auto
                             }
                         ),
                         new Run(new RunProperties(
@@ -501,9 +503,9 @@ namespace WpfApp2.Services
                                 new Languages() { Bidi = "ar-SA" },
                                 new Bold(),
                                 new BoldComplexScript(),
-                                new RunFonts { Ascii = "Arial", HighAnsi = "Arial", ComplexScript = "Arial" },
-                                new FontSize { Val = "32" },
-                                new FontSizeComplexScript { Val = "32" },
+                                new RunFonts { Ascii = "PT Bold Heading", HighAnsi = "PT Bold Heading", ComplexScript = "PT Bold Heading" },
+                                new FontSize { Val = "28" },
+                                new FontSizeComplexScript { Val = "28" },
                                 new Text($"{SignatureFirstLine}"),
                                 new Break(),
                                 new Text($"{signatureName}"),

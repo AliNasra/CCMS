@@ -9,6 +9,12 @@ using System.Threading.Tasks;
 using WebApplication1;
 using WpfApp2.Models;
 using WpfApp2.Models.Items;
+using Newtonsoft.Json;
+using WpfApp2.Views.Resources;
+using System.IO;
+using WpfApp2.ViewModels.Resources;
+using System.Collections.ObjectModel;
+using WpfApp2.ViewModels.Fuel;
 
 namespace WpfApp2.Services
 {
@@ -260,6 +266,85 @@ namespace WpfApp2.Services
 
             }
             return filteredRecords;
+        }
+        public static int RetrieveProcurmenetOfficeFuelStorage()
+        {
+            if (File.Exists(AdditionalDataViewModel.AdditionalDataPath))
+            {
+                AdditionalInfo infoData = new AdditionalInfo();
+                var additionalRecordsJsonString = File.ReadAllText(AdditionalDataViewModel.AdditionalDataPath);
+                infoData = JsonConvert.DeserializeObject<AdditionalInfo>(additionalRecordsJsonString);
+                if (checkRecordExistence())
+                {
+                    return infoData.procurmentOfficeFuelAmount;
+                }
+                else
+                {
+                    int sumofImportedFuel = 0;
+                    AddFuelRecordViewModel AddFuelRecordVM = new AddFuelRecordViewModel();
+                    if (File.Exists(AddFuelRecordVM.fuelRecordsFilePath))
+                    {
+                        var fuelRecordsJsonString = File.ReadAllText(AddFuelRecordVM.fuelRecordsFilePath);
+                        List<FuelRecord> filteredFuelRecords = FuelService.FilterFuelRecords(JsonConvert.DeserializeObject<List<FuelRecord>>(fuelRecordsJsonString));
+                        sumofImportedFuel = filteredFuelRecords.Select(x => int.Parse(x.importedFuel)).Sum();
+                    }
+                    bool canImport = CanImportFuelFromProcurementOffice(sumofImportedFuel);
+                    if (canImport)
+                    {
+                        return infoData.procurmentOfficeFuelAmount - sumofImportedFuel;
+                    }
+                    else
+                    {
+                        throw new Exception("لا يوجد مخزون وقود كافى بمكتب الإتصال");
+                    }
+                }
+            }
+            else
+            {
+                throw new Exception("برجاء تحديد مقدار مخزون الوقود بمكتب الإتصال من صفحة معلومات إضافية");
+            }
+        }
+        public static void UpdateProcurementOfficeFuelStorage(int procuredAmount)
+        {
+            if (File.Exists(AdditionalDataViewModel.AdditionalDataPath))
+            {
+                AdditionalInfo infoData = new AdditionalInfo();
+                var additionalRecordsJsonString = File.ReadAllText(AdditionalDataViewModel.AdditionalDataPath);
+                infoData = JsonConvert.DeserializeObject<AdditionalInfo>(additionalRecordsJsonString);
+                bool canImport = CanImportFuelFromProcurementOffice(procuredAmount);
+                if (canImport)
+                {
+                    infoData.procurmentOfficeFuelAmount = infoData.procurmentOfficeFuelAmount - procuredAmount;
+                    var json = JsonConvert.SerializeObject(infoData, Formatting.Indented);
+                    File.WriteAllText(AdditionalDataViewModel.AdditionalDataPath, json);
+                }
+            }
+            else
+            {
+                throw new Exception("برجاء تحديد مقدار مخزون الوقود بمكتب الإتصال من صفحة معلومات إضافية");
+            }
+        }
+        public static bool CanImportFuelFromProcurementOffice(int procuredAmount)
+        {
+            if (File.Exists(AdditionalDataViewModel.AdditionalDataPath))
+            {
+                AdditionalInfo infoData = new AdditionalInfo();
+                var additionalRecordsJsonString = File.ReadAllText(AdditionalDataViewModel.AdditionalDataPath);
+                infoData = JsonConvert.DeserializeObject<AdditionalInfo>(additionalRecordsJsonString);
+                if (infoData.procurmentOfficeFuelAmount >= procuredAmount)
+                {
+                    return true;
+                }
+                else
+                {
+                    throw new Exception("لا يوجد مخزون وقود كافى بمكتب الإتصال");
+                }
+            }
+            else
+            {
+                throw new Exception("برجاء تحديد مقدار مخزون الوقود بمكتب الإتصال من صفحة معلومات إضافية");
+            }
+
         }
     }
 }

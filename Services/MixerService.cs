@@ -203,7 +203,7 @@ namespace WpfApp2.Services
                 Unit managingUnit  = getOperatingUnit(mixer.mixerID);
                 unitName           = $"{managingUnit.unitDesignation.ElementAt(2)} {managingUnit.unitCode} {managingUnit.unitSpecialization.Substring(0,3)}";
                 isNotFunctional    = "-";
-                isFunctional       = "✓";
+                isFunctional       = "√";
                 cabbageNo          = "كاباج";
                 cabbageNo          += " ";
                 cabbageNo          += "(";

@@ -170,7 +170,18 @@ namespace WpfApp2.Services
                         throw new Exception("لا توجد وحدة بهذا الاسم");
                     }
                     var unitInfo = unitName.Split();
-                    var unit = context.units.Where(x => x.unitDesignation == unitInfo[0] && x.unitCode == int.Parse(unitInfo[1]) && x.unitSpecialization == unitInfo[2]).FirstOrDefault();
+                    Unit unit;
+                    if (unitInfo.Count() == 3)
+                    {
+                        unit = context.units.Where(x => x.unitDesignation == unitInfo[0] && x.unitCode == int.Parse(unitInfo[1]) && x.unitSpecialization == unitInfo[2]).FirstOrDefault();
+                    }
+                    else
+                    {
+                        string unitSpecializationValidation = unitInfo[2];
+                        unitSpecializationValidation += " ";
+                        unitSpecializationValidation += unitInfo[3];
+                        unit = context.units.Where(x => x.unitDesignation == unitInfo[0] && x.unitCode == int.Parse(unitInfo[1]) && x.unitSpecialization == unitSpecializationValidation).FirstOrDefault();
+                    }
                     if (unit == null)
                     {
                         throw new Exception("لا توجد وحدة بهذا الاسم");
