@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,16 +57,36 @@ namespace WpfApp2.Views.Fuel
                 {
                     throw new Exception("لا يمكنك ادخال بيانات التمام اكتر من مرة واحدة فاليوم");
                 }
-                FuelService.AddFuelRecords(AddFuelVM.FuelRecords.ToList());
-                var emptyList = new List<FuelRecord>();
-                var json = JsonConvert.SerializeObject(emptyList, Formatting.Indented);
-                File.WriteAllText(AddFuelVM.fuelRecordsFilePath, json);
-                MessageBox.Show($"تم إضافة تمام السولار بنجاح", "تنبيه", MessageBoxButton.OK);
-                NavigationService?.Navigate(new FuelMenu());
+                else
+                {
+                    MessageBoxResult result = MessageBox.Show(
+                        "هل انت متأكد من تمام السولار؟",       
+                        "تنبيه",                             
+                        MessageBoxButton.YesNo,                     
+                        MessageBoxImage.Question                    
+                    );
+
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        int sumofImportedFuel = AddFuelVM.FuelRecords.Select(x => int.Parse(x.importedFuel)).Sum();
+                        FuelService.UpdateProcurementOfficeFuelStorage(sumofImportedFuel);
+                        FuelService.AddFuelRecords(AddFuelVM.FuelRecords.ToList());
+                        var emptyList = new List<FuelRecord>();
+                        var json = JsonConvert.SerializeObject(emptyList, Formatting.Indented);
+                        File.WriteAllText(AddFuelVM.fuelRecordsFilePath, json);
+                        MessageBox.Show($"تم إضافة تمام السولار بنجاح", "تنبيه", MessageBoxButton.OK,MessageBoxImage.Information);
+                        NavigationService?.Navigate(new FuelMenu());
+                    }
+                    else
+                    {
+                        
+                    }
+                }
+                
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"{ex.Message}", "تنبيه", MessageBoxButton.OK);
+                MessageBox.Show($"{ex.Message}", "تنبيه", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
