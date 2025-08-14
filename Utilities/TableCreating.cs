@@ -85,7 +85,7 @@ namespace WpfApp2.Utilities
         }
 
 
-        public static TableCell CreateCell(string text, double cellWidth, bool bold = false, string font = "Arial", string size = "24", bool center = true, string fillColor = "FFFFFF")
+        public static TableCell CreateCell(string text, double cellWidth, bool bold = false, string font = "Arial", string size = "24", bool center = true, string fillColor = "FFFFFF",string lineSpacing = "240")
         {
             text = replaceArabicToIndianDigits(text);
             // Create run properties (font, size, bold)
@@ -112,8 +112,12 @@ namespace WpfApp2.Utilities
             paraProps.Append(new BiDi());
             paraProps.Append(new SpacingBetweenLines
             {
-                After = "0", // No space after the paragraph
-                AfterAutoSpacing = false // Make sure it's not automatically adjusted
+                After = "0",
+                Before = "0",
+                AfterAutoSpacing = false,
+                BeforeAutoSpacing= false,
+                Line = lineSpacing,       
+                LineRule = LineSpacingRuleValues.Auto
             });
             // Construct paragraph with run
             var paragraph = new Paragraph(
@@ -128,6 +132,7 @@ namespace WpfApp2.Utilities
                 if (i < texts.Length - 1)
                     paragraph.Append(new Run(new Break())); // Add break between lines
             }
+
 
             // Construct and return the cell
             return new TableCell(
@@ -148,6 +153,25 @@ namespace WpfApp2.Utilities
                 paragraph
             );
         }
+
+        public static void AddBorderToCell(TableCell cell, TableCellBorders borders)
+        {
+            // Ensure the cell has properties
+            var tcp = cell.GetFirstChild<TableCellProperties>();
+            if (tcp == null)
+            {
+                tcp = new TableCellProperties();
+                cell.PrependChild(tcp);
+            }
+
+            // Add or replace the existing borders
+            var existingBorders = tcp.GetFirstChild<TableCellBorders>();
+            if (existingBorders != null)
+                tcp.RemoveChild(existingBorders);
+
+            tcp.Append(borders);
+        }
+
 
         public static Table mergeTableCells(Table table)
         {
@@ -267,27 +291,76 @@ namespace WpfApp2.Utilities
         {
             // Start table
             Table table = new Table();
-            table.AppendChild(tblProperties.CloneNode(true));
+            //table.AppendChild(tblProperties.CloneNode(true));
 
             // First Row
             TableRow row1 = new TableRow();
-            List<string> items = new List<string> { "الخرسانة م3", "تاريخ أخر صرف", "المتبقى", "المستهلك اليوم", "السعة اللترية للخزانات", "الوحدة", "م" };
-            List<double> cellWidth = new List<double> { 1.18, 1.8, 1.1, 0.92, 0.72, 0.92, 1.43, 0.38 };
+            List<string> items = new List<string> { "الخرسانة م3", "تاريخ أخر صرف", "المتبقى", "المستهلك اليوم", "السعة اللترية للخزانات", "المشروع / الوحدة", "م" };
+            List<double> cellWidth = new List<double> { 1.18, 1.51, 0.76, 0.8, 0.83, 0.91, 1.43, 0.38 };
+
+            ///////////// First Row Cell Borders
+            List<TableCellBorders> cellBorders = new List<TableCellBorders> { 
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.None },
+                    new LeftBorder   { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.Single, Size = 4 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.None },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.None },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.None },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.None },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.ThinThickMediumGap, Size = 12 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.None },
+                    new LeftBorder   { Val = BorderValues.ThinThickMediumGap, Size = 12 },
+                    new RightBorder  { Val = BorderValues.ThinThickMediumGap, Size = 18 }
+                    ),
+            };
+            //////////////////////////
             int j = 0;
             for (int i = 0; i < items.Count; i++)
             {
 
                 if (items.ElementAt(i) == "تاريخ أخر صرف")
                 {
-                    var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(i) + cellWidth.ElementAt(i + 1), bold: true, font: "Arial", size:"24");
+                    var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(i) + cellWidth.ElementAt(i + 1), bold: true, font: "PT Bold Heading", size:"24");
                     cell.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
                     j++;
+                    AddBorderToCell(cell,cellBorders.ElementAt(i));
                     row1.Append(cell);
                 }
                 else
                 {
-                    var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(j), bold: true, font: "Arial", size: "24");
+                    var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(j), bold: true, font: "PT Bold Heading", size: "24");
                     cell.TableCellProperties = new TableCellProperties(new VerticalMerge { Val = MergedCellValues.Restart });
+                    AddBorderToCell(cell, cellBorders.ElementAt(i));
                     row1.Append(cell);
                 }
                 j++;
@@ -297,30 +370,141 @@ namespace WpfApp2.Utilities
             table.Append(row1);
 
             // Second Row
+
+            ///////////// Second Row Cell Borders
+            cellBorders.Clear();
+            cellBorders = new List<TableCellBorders> {
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.None},
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder   { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.Single, Size = 4 },
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.Single, Size = 4 },
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.None },
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.None },
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.None },
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.None },
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.ThinThickMediumGap, Size = 12 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.None },
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder   { Val = BorderValues.ThinThickMediumGap, Size = 12 },
+                    new RightBorder  { Val = BorderValues.ThinThickMediumGap, Size = 18 }
+                    ),
+            };
+            /////////////
             TableRow row2 = new TableRow();
             for (int i = 0; i < 8; i++)
             {
                 var cell = new TableCell();
                 if (i == 1)
                 {
-                    cell = CreateCell("التاريخ", cellWidth.ElementAt(i), bold: true, font: "Arial", size: "24");
+                    cell = CreateCell("التاريخ", cellWidth.ElementAt(i), bold: true, font: "PT Bold Heading", size: "24");
                 }
                 else if (i == 2)
                 {
-                    cell = CreateCell("الكمية", cellWidth.ElementAt(i), bold: true, font: "Arial", size: "24");
+                    cell = CreateCell("الكمية", cellWidth.ElementAt(i), bold: true, font: "PT Bold Heading", size: "24");
                 }
                 else
                 {
-                    cell = CreateCell("", cellWidth.ElementAt(i), bold: true, font: "Arial", size: "24");
+                    cell = CreateCell("", cellWidth.ElementAt(i), bold: true, font: "PT Bold Heading", size: "24");
                     cell.TableCellProperties = new TableCellProperties(new VerticalMerge());
                 }
+                AddBorderToCell(cell, cellBorders.ElementAt(i));
                 row2.Append(cell);
             }
             table.Append(row2);
 
+
+            ///////////// Rows Cell Borders
+            cellBorders.Clear();
+            cellBorders = new List<TableCellBorders> {
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.Single, Size = 4 },
+                    new BottomBorder { Val = BorderValues.Single, Size = 4  },
+                    new LeftBorder   { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.Single, Size = 4 },
+                    new BottomBorder { Val = BorderValues.Single, Size = 4 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.Single, Size = 4 },
+                    new BottomBorder { Val = BorderValues.Single, Size = 4 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.Single, Size = 4 },
+                    new BottomBorder { Val = BorderValues.Single, Size = 4 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.Single, Size = 4 },
+                    new BottomBorder { Val = BorderValues.Single, Size = 4 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.Single, Size = 4 },
+                    new BottomBorder { Val = BorderValues.Single, Size = 4 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.Single, Size = 4 },
+                    new BottomBorder { Val = BorderValues.Single, Size = 4 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.ThinThickMediumGap, Size = 12 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.Single, Size = 4 },
+                    new BottomBorder { Val = BorderValues.Single, Size = 4 },
+                    new LeftBorder   { Val = BorderValues.ThinThickMediumGap, Size = 12 },
+                    new RightBorder  { Val = BorderValues.ThinThickMediumGap, Size = 18 }
+                    ),
+            };
+            /////////////
+
             int rowCount = 1;
             /// Vals 
             List<FuelDepot> depots        = DepotService.fetchDepots();
+            int depotCount                = depots.Count;
             double generalSumConcrete     = 0;
             int generalSumRemainingFuel   = 0;
             int generalSumConsumedFuel    = 0;
@@ -380,31 +564,69 @@ namespace WpfApp2.Utilities
                 lastImportDateString += "/";
                 lastImportDateString += " ";
                 lastImportDateString += $"{lastImportDate.Year}";
-                items = new List<string> { sumConcrete < epsilon ? "-" : $"{sumConcrete.ToString("G29")}", $"{lastImportDateString}", $"{lastImportAmount}", $"{remainingFuel}", $"{consumedFuel}", $"{depot.depotStorageCapacity.ToString("N0")}", $"{depot.depotName}", $"{rowCount}" };
+                string sumConcreteString = sumConcrete < epsilon ? "-" : $"{sumConcrete.ToString("G29")}";
+                if (sumConcreteString != "-")
+                {
+                    sumConcreteString += " ";
+                    sumConcreteString += "م3 خرسانة";
+                }              
+                items = new List<string> { sumConcreteString, $"{lastImportDateString}", $"{lastImportAmount}", $"{remainingFuel}", $"{consumedFuel}", $"{depot.depotStorageCapacity.ToString("N0")}", $"{depot.depotName}", $"{rowCount}" };
                 TableRow row = new TableRow();
+
+                if (rowCount == 1)
+                {
+                    foreach(var cellBorder in cellBorders)
+                    {
+                        cellBorder.TopBorder = new TopBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 };
+                    }
+                }
+                else if ( rowCount == depotCount)
+                {
+                    foreach (var cellBorder in cellBorders)
+                    {                        
+                        cellBorder.BottomBorder = new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 };
+                    }
+                }
+                else
+                {
+                    foreach (var cellBorder in cellBorders)
+                    {
+                        cellBorder.TopBorder = new TopBorder { Val = BorderValues.Single, Size = 4 };
+                    }
+                }
                 for (int i = 0; i < items.Count; i++)
                 {
-                    if(i == 1 || i == 2)
+                    if (i == 0)
+                    {
+                        var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(i), true, font: "PT Bold Heading" ,size: "20");
+                        AddBorderToCell(cell, (TableCellBorders)cellBorders.ElementAt(i).CloneNode(true));
+                        row.Append(cell);
+                    }
+                    else if(i == 1 || i == 2)
                     {
                         if (shouldBeShaded == true)
                         {
-                            var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(i), false,fillColor: "D9D9D9",size:"28");
+                            var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(i), false,fillColor: "D9D9D9",size:"32");
+                            AddBorderToCell(cell, (TableCellBorders)cellBorders.ElementAt(i).CloneNode(true));
                             row.Append(cell);
                         }
                         else
                         {
-                            var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(i), false, size: "28");
+                            var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(i), false, size: "32");
+                            AddBorderToCell(cell, (TableCellBorders)cellBorders.ElementAt(i).CloneNode(true));
                             row.Append(cell);
                         }
                     }
                     else if (i == 6)
                     {
-                        var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(i), true, size: "28");
+                        var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(i), true, size: "32");
+                        AddBorderToCell(cell, (TableCellBorders)cellBorders.ElementAt(i).CloneNode(true));
                         row.Append(cell);
                     }
                     else
                     {
-                        var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(i), false, size: "28");
+                        var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(i), false, size: "32");
+                        AddBorderToCell(cell, (TableCellBorders)cellBorders.ElementAt(i).CloneNode(true));
                         row.Append(cell);
                     }
                     
@@ -417,10 +639,62 @@ namespace WpfApp2.Utilities
                 generalSumStorageCapacity += depot.depotStorageCapacity;
             }
 
-            ///
+            ///////////////////////
+
+            cellBorders.Clear();
+            cellBorders = new List<TableCellBorders> {
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18},
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder   { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.ThinThickMediumGap, Size = 18 }
+                    )
+            };
+            /////////////
 
             // Third Row
             string generalSumConcreteString = generalSumConcrete == 0 ? "-" : generalSumConcrete.ToString("G29");
+            if (generalSumConcreteString != "-")
+            {
+                generalSumConcreteString += " ";
+                generalSumConcreteString += "م3 خرسانة";
+            }           
             string generalSumRemainingFuelString = generalSumRemainingFuel == 0 ? "صفر" : generalSumRemainingFuel.ToString("N0");
             string generalSumConsumedFuelString = generalSumConsumedFuel == 0 ? "صفر" : generalSumConsumedFuel.ToString("N0");
 
@@ -428,17 +702,65 @@ namespace WpfApp2.Utilities
             TableRow row3 = new TableRow();
             for (int i = 0; i < items.Count; i++)
             {
-                var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(i), false);
-                row3.Append(cell);
+                if (i == 0)
+                {
+                    var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(i), true, font : "PT Bold Heading", size: "20");
+                    AddBorderToCell(cell, cellBorders.ElementAt(i));
+                    row3.Append(cell);
+                }
+                else
+                {
+                    var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(i), false, size: "32");
+                    AddBorderToCell(cell, cellBorders.ElementAt(i));
+                    row3.Append(cell);
+                }
+                
             }
-            var finalCell = CreateCell("الإجمالى", cellWidth.ElementAt(cellWidth.Count - 2) + cellWidth.ElementAt(cellWidth.Count - 1), true);
+            var finalCell = CreateCell("الإجمالى", cellWidth.ElementAt(cellWidth.Count - 2) + cellWidth.ElementAt(cellWidth.Count - 1), true, size: "32");
             finalCell.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+            AddBorderToCell(finalCell, cellBorders.Last());
             row3.Append(finalCell);
             row3.AddChild(getTableRowProperties(0.47));
             table.Append(row3);
 
 
             // Fourth Row
+
+            cellBorders.Clear();
+            cellBorders = new List<TableCellBorders> {
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18},
+                    new BottomBorder { Val = BorderValues.Single, Size = 4 },
+                    new LeftBorder   { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.Single, Size = 4 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.Single, Size = 4 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.Single, Size = 4 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.Single, Size = 4 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.ThinThickMediumGap, Size = 18 }
+                    )
+            };
+            /////////////
+
             items = new List<string> { $"-", $"سمر ديزل", $"بنزين 80", $"السولار", $"الإكتفاء الذاتى" };
             TableRow row4 = new TableRow();
             j = 0;
@@ -446,14 +768,16 @@ namespace WpfApp2.Utilities
             {
                 if (i != 1 && i != 2)
                 {
-                    var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(j) + cellWidth.ElementAt(j + 1), true);
+                    var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(j) + cellWidth.ElementAt(j + 1), true, size: "32");
                     cell.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    AddBorderToCell(cell, cellBorders.ElementAt(i));
                     row4.Append(cell);
                     j++;
                 }
                 else
                 {
-                    var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(j), true);
+                    var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(j), true, size: "32");
+                    AddBorderToCell(cell, cellBorders.ElementAt(i));
                     row4.Append(cell);
                 }
                 j++;
@@ -462,7 +786,47 @@ namespace WpfApp2.Utilities
             row4.AddChild(getTableRowProperties(0.47));
             table.Append(row4);
 
-            ///
+            //////////////////////////////////////
+            cellBorders.Clear();
+            cellBorders = new List<TableCellBorders> {
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.Single, Size = 4},
+                    new BottomBorder { Val = BorderValues.Single, Size = 4 },
+                    new LeftBorder   { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.Single, Size = 4 },
+                    new BottomBorder { Val = BorderValues.Single, Size = 4 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.Single, Size = 4 },
+                    new BottomBorder { Val = BorderValues.Single, Size = 4 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.Single, Size = 4 },
+                    new BottomBorder { Val = BorderValues.Single, Size = 4 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.Single, Size = 4 },
+                    new BottomBorder { Val = BorderValues.Single, Size = 4 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.ThinThickMediumGap, Size = 12 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.Single, Size = 4 },
+                    new BottomBorder { Val = BorderValues.Single, Size = 4 },
+                    new LeftBorder   { Val = BorderValues.ThinThickMediumGap, Size = 12 },
+                    new RightBorder  { Val = BorderValues.ThinThickMediumGap, Size = 18 }
+                    )
+            };
+            /////////////
 
             List<Unit> units = UnitService.retrieveUnits();
             foreach (var unit in units)
@@ -475,14 +839,16 @@ namespace WpfApp2.Utilities
 
                     if (i == 0 || i == 3)
                     {
-                        var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(j) + cellWidth.ElementAt(j + 1), true);
+                        var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(j) + cellWidth.ElementAt(j + 1), true, size: "32");
                         cell.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
                         j++;
+                        AddBorderToCell(cell, (TableCellBorders)cellBorders.ElementAt(i).CloneNode(true));
                         row.Append(cell);
                     }
                     else
                     {
-                        var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(j), true);
+                        var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(j), true, size: "32");
+                        AddBorderToCell(cell, (TableCellBorders)cellBorders.ElementAt(i).CloneNode(true));
                         row.Append(cell);
                     }
                     j++;
@@ -498,6 +864,43 @@ namespace WpfApp2.Utilities
 
 
             // Fifth Row
+
+            //////////////////////////////////////
+            cellBorders.Clear();
+            cellBorders = new List<TableCellBorders> {
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18},
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder   { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.ThinThickMediumGap, Size = 18 }
+                    )
+            };
+            /////////////
+
             j = 0;
             items = new List<string> { $"-", $"{generalSumSummerDiesel.ToString("N0")}", $"{generalSumBenzine80.ToString("N0")}", $"{generalSumSelfSufficiency.ToString("N0")}", $"الإجمالى" };
             TableRow row5 = new TableRow();
@@ -505,29 +908,36 @@ namespace WpfApp2.Utilities
             {
                 if (i != 1 && i != 2)
                 {
-                    var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(j) + cellWidth.ElementAt(j + 1), true);
+                    var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(j) + cellWidth.ElementAt(j + 1), true, size: "32");
                     cell.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    AddBorderToCell(cell, cellBorders.ElementAt(i));
                     row5.Append(cell);
                     j++;
                 }
                 else
                 {
-                    var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(j), true);
+                    var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(j), true, size: "32");
+                    AddBorderToCell(cell, cellBorders.ElementAt(i));
                     row5.Append(cell);
                 }
-
                 j++;
             }
             row5.AddChild(getTableRowProperties(0.47));
             table.Append(row5);
 
-
             // Sixth Row
             TableRow row6 = new TableRow();
-            var sixthRowCell = CreateCell("", cellWidth.Sum(), true);
+            var sixthRowCell = CreateCell("", cellWidth.Sum(), true, size: "32");
+            TableCellBorders sixthRowCellBorders = new TableCellBorders(
+                    new TopBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new RightBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 }
+            );          
             sixthRowCell.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 8 });
+            AddBorderToCell(sixthRowCell, sixthRowCellBorders);
             row6.Append(sixthRowCell);
-            row6.AddChild(getTableRowProperties(0.47));
+            row6.AddChild(getTableRowProperties(0.3));
             table.Append(row6);
 
             var additionalInto = File.ReadAllText(AdditionalDataViewModel.AdditionalDataPath);
@@ -536,21 +946,65 @@ namespace WpfApp2.Utilities
 
             // Seventh Row
             j = 0;
-            items = new List<string> { $"-", $"-", $"-", $"{info.procurmentOfficeFuelAmount.ToString("N0")}", $"مكتب الإتصال", $"{rowCount}" };
+            //////////////////////////////////////
+            cellBorders.Clear();
+            cellBorders = new List<TableCellBorders> {
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18},
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder   { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.Single, Size = 4 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder   { Val = BorderValues.Single, Size = 4 },
+                    new RightBorder  { Val = BorderValues.ThinThickMediumGap, Size = 12 }
+                    ),
+                new TableCellBorders (
+                    new TopBorder    { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new BottomBorder { Val = BorderValues.ThinThickMediumGap, Size = 18 },
+                    new LeftBorder   { Val = BorderValues.ThinThickMediumGap, Size = 12 },
+                    new RightBorder  { Val = BorderValues.ThinThickMediumGap, Size = 18 }
+                    )
+            };
+            /////////////
+            int procurmentOfficeFuelAmount = FuelService.RetrieveProcurmenetOfficeFuelStorage();
+            items = new List<string> { $"-", $"-", $"-", $"{procurmentOfficeFuelAmount.ToString("N0")}", $"مكتب الإتصال", $"{rowCount}" };
             TableRow row7 = new TableRow();
             for (int i = 0; i < items.Count; i++)
             {
 
                 if (i == 0 || i == 3)
                 {
-                    var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(j) + cellWidth.ElementAt(j + 1), true);
+                    var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(j) + cellWidth.ElementAt(j + 1), true, size: "32");
                     cell.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    AddBorderToCell(cell, cellBorders.ElementAt(i));
                     row7.Append(cell);
                     j++;
                 }
                 else
                 {
-                    var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(j), true);
+                    var cell = CreateCell(items.ElementAt(i), cellWidth.ElementAt(j), true, size: "32");
+                    AddBorderToCell(cell, cellBorders.ElementAt(i));
                     row7.Append(cell);
                 }
                 j++;
@@ -582,7 +1036,7 @@ namespace WpfApp2.Utilities
             HeaderRow.AddChild(getTableRowProperties(0.6));
             for (int i = 0; i < tableItems.Count; i++)
             {
-                var cell = CreateCell(tableItems.ElementAt(i), cellWidth.ElementAt(i), true, "Arial", "24", fillColor: "D9D9D9");
+                var cell = CreateCell(tableItems.ElementAt(i), cellWidth.ElementAt(i), true, font: "PT Bold Heading", size: "20", fillColor: "D9D9D9");
                 HeaderRow.Append(cell);
             }
             table.Append(HeaderRow);
@@ -626,26 +1080,33 @@ namespace WpfApp2.Utilities
                     }
                     if (record.isInformal)
                     {
-                        entryRow.Append(CreateCell($"{record.company}", cellWidth.ElementAt(1), true, fillColor: "D9D9D9"));
-                        entryRow.Append(CreateCell($"{record.project}", cellWidth.ElementAt(2), true, fillColor: "D9D9D9"));
-                        
-                        entryRow.Append(CreateCell(temp, cellWidth.ElementAt(3), true, fillColor: "D9D9D9"));
+                        entryRow.Append(CreateCell($"{record.company}", cellWidth.ElementAt(1), true, font: "PT Bold Heading", size: "20", fillColor: "D9D9D9",lineSpacing : "170"));
+                        entryRow.Append(CreateCell($"{record.project}", cellWidth.ElementAt(2), true, font: "PT Bold Heading", size: "20", fillColor: "D9D9D9", lineSpacing: "170"));                       
+                        entryRow.Append(CreateCell(temp, cellWidth.ElementAt(3), true, font: "PT Bold Heading", size: "20", fillColor: "D9D9D9", lineSpacing: "170"));
                     }
                     else
                     {
-                        entryRow.Append(CreateCell($"{record.company}", cellWidth.ElementAt(1), true));
-                        entryRow.Append(CreateCell($"{record.project}", cellWidth.ElementAt(2), true));
-                        entryRow.Append(CreateCell(temp, cellWidth.ElementAt(3), true));
+                        entryRow.Append(CreateCell($"{record.company}", cellWidth.ElementAt(1), true, font: "PT Bold Heading", size: "20", lineSpacing: "170"));
+                        entryRow.Append(CreateCell($"{record.project}", cellWidth.ElementAt(2), true, font: "PT Bold Heading", size: "20", lineSpacing: "170"));
+                        entryRow.Append(CreateCell(temp, cellWidth.ElementAt(3), true, font: "PT Bold Heading", size: "20", lineSpacing: "170"));
                     }
-                    temp = "";
-                    temp += $"{sumConcrete.ToString("G29")}";
-                    temp += " ";
-                    temp += "م3 خرسانة";
-                    entryRow.Append(CreateCell(temp, cellWidth.ElementAt(4), true));
-                    entryRow.Append(CreateCell($"{mixer.mixerName}", cellWidth.ElementAt(5), true));
-                    entryRow.Append(CreateCell($"{unitName}", cellWidth.ElementAt(6), true));
-                    entryRow.Append(CreateCell($"{rowCounter}", cellWidth.ElementAt(7), true, fillColor: "D9D9D9"));
-                    table.Append(entryRow);
+                    if (sumConcrete == 0)
+                    {
+                        temp = "-";
+                    }
+                    else
+                    {
+                        temp = "";
+                        temp += $"{sumConcrete.ToString("G29")}";
+                        temp += " ";
+                        temp += "م3 خرسانة";
+                    }                   
+                    entryRow.Append(CreateCell(temp, cellWidth.ElementAt(4), true, font: "PT Bold Heading", size: "20", lineSpacing: "170"));
+                    entryRow.Append(CreateCell($"{mixer.mixerName}", cellWidth.ElementAt(5), true, font: "PT Bold Heading", size: "20", lineSpacing: "170"));
+                    entryRow.Append(CreateCell($"{unitName}", cellWidth.ElementAt(6), true, font: "PT Bold Heading", size: "20", lineSpacing: "170"));
+                    entryRow.Append(CreateCell($"{rowCounter}", cellWidth.ElementAt(7), true, font: "PT Bold Heading", size: "20", fillColor: "D9D9D9", lineSpacing: "170"));
+                    entryRow.AddChild(getTableRowProperties(0.45));
+                    table.Append(entryRow); 
                     temp = "";
                 }
                 rowCounter++;
@@ -691,16 +1152,23 @@ namespace WpfApp2.Utilities
             {
                 concreteSummationInDetail = "-";
             }
-            temp = "";
-            temp += $"{sumConcreteString}";
-            temp += " ";
-            temp += "م3 خرسانة";
+            if (sumConcreteString == "-")
+            {
+                temp = "-";
+            }
+            else
+            {
+                temp = "";
+                temp += $"{sumConcreteString}";
+                temp += " ";
+                temp += "م3 خرسانة";
+            }          
             tableItems = new List<string> { "-", "-", "-", $"{concreteSummationInDetail}", $"{temp}", "-", "الإجمالى" };
             TableRow finalRow = new TableRow();
-            finalRow.AddChild(getTableRowProperties(0.5));
+            finalRow.AddChild(getTableRowProperties(0.65));
             for (int i = 0; i < tableItems.Count; i++)
             {
-                var cell = CreateCell($"{tableItems.ElementAt(i)}", cellWidth.ElementAt(i), true, fillColor: "D9D9D9");
+                var cell = CreateCell($"{tableItems.ElementAt(i)}", cellWidth.ElementAt(i), true, font: "PT Bold Heading", size: "20", fillColor: "D9D9D9", lineSpacing: "170");
                 if (i == tableItems.Count - 1)
                 {
                     cell.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 },
@@ -905,28 +1373,28 @@ namespace WpfApp2.Utilities
             List<double> cellWidth = new List<double> { 0.67, 0.67, 0.67, 0.67, 0.89, 1.18, 1.48, 1.48, 0.52, 0.8, 0.56 , 0.56, 0.75, 0.90, 0.29 };
             TableRow row1 = new TableRow();
             TableRow row2 = new TableRow();
-            row1.AddChild(getTableRowProperties(0.45));
-            row2.AddChild(getTableRowProperties(0.45));
+            row1.AddChild(getTableRowProperties(0.5));
+            row2.AddChild(getTableRowProperties(0.5));
             int j = 0;
             for (int i = 0; i < tableItems.Count; i++)
             {
                 if (i == 0)
                 {
-                    var cell = CreateCell(tableItems.ElementAt(i), cellWidth.ElementAt(j) + cellWidth.ElementAt(j + 1) + cellWidth.ElementAt(j + 2) + cellWidth.ElementAt(j + 3), true, "Arial", "20");
+                    var cell = CreateCell(tableItems.ElementAt(i), cellWidth.ElementAt(j) + cellWidth.ElementAt(j + 1) + cellWidth.ElementAt(j + 2) + cellWidth.ElementAt(j + 3), true, "PT Bold Heading", "20");
                     cell.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 4 });
                     row1.Append(cell);
                     j += 3;
                 }
                 else if (i == 7)
                 {
-                    var cell = CreateCell(tableItems.ElementAt(i), cellWidth.ElementAt(j) + cellWidth.ElementAt(j + 1), true, "Arial", "22");
+                    var cell = CreateCell(tableItems.ElementAt(i), cellWidth.ElementAt(j) + cellWidth.ElementAt(j + 1), true, "PT Bold Heading", "20");
                     cell.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
                     row1.Append(cell);
                     j++;
                 }
                 else
                 {
-                    row1.Append(CreateCell(tableItems.ElementAt(i), cellWidth.ElementAt(j), true, "Arial", "22"));
+                    row1.Append(CreateCell(tableItems.ElementAt(i), cellWidth.ElementAt(j), true, "PT Bold Heading", "20"));
                 }
                 j++;             
             }
@@ -934,7 +1402,7 @@ namespace WpfApp2.Utilities
             tableItems = new List<string> { "باقى", "المستهلك اليوم", "الباقى الأمس", "توريد", "الجهه المستفيدة", "العنصر الذى تم صبه", "المشروع / الإستخدام", "الكمية المنتجة م3", "الطاقة الإنتاجية م3 / س", "الوحدة ", "عاطل", "صالح", "نوع الخلاطة", "اسم الخلاطة / منطقة تمركز الخلاطة", "م" };
             for (int i = 0; i < tableItems.Count; i++)
             {
-                row2.Append(CreateCell(tableItems.ElementAt(i), cellWidth.ElementAt(i), true, "Arial", "22"));                
+                row2.Append(CreateCell(tableItems.ElementAt(i), cellWidth.ElementAt(i), true, "PT Bold Heading", "18"));                
             }
 
             table.Append(row1);
@@ -947,25 +1415,26 @@ namespace WpfApp2.Utilities
                 int entryCount = entry.Count;
                 for (int i = 0; i <entryCount; i++)
                 {
-                    row.Append(CreateCell(entry.ElementAt(i), cellWidth.ElementAt(i), true, "Arial", "20"));
+                    row.Append(CreateCell(entry.ElementAt(i), cellWidth.ElementAt(i), true, "PT Bold Heading", "20", lineSpacing: "170"));
                 }
+                row.AddChild(getTableRowProperties(0.45));
                 table.Append(row);
             }
             if (isFinal == true)
             {
                 TableRow row = new TableRow();
-                row.AddChild(getTableRowProperties(0.45));
+                row.AddChild(getTableRowProperties(0.55));
                 j = 0;
                 int itemCount = finalRowItems.Count;
                 for (int i = 0; i< itemCount; i++)
                 {
                     if (i < itemCount - 1)
                     {
-                        row.Append(CreateCell(finalRowItems.ElementAt(i), cellWidth.ElementAt(j),true, "Arial", "20"));
+                        row.Append(CreateCell(finalRowItems.ElementAt(i), cellWidth.ElementAt(j),true, "PT Bold Heading", "19", lineSpacing: "170"));
                     }
                     else
                     {
-                        var cell = CreateCell(finalRowItems.ElementAt(i), cellWidth.ElementAt(j) + cellWidth.ElementAt(j + 1), true, "Arial", "20");
+                        var cell = CreateCell(finalRowItems.ElementAt(i), cellWidth.ElementAt(j) + cellWidth.ElementAt(j + 1), true, "PT Bold Heading", "20", lineSpacing: "170");
                         cell.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
                         row.Append(cell);
                         j++;
@@ -1018,8 +1487,8 @@ namespace WpfApp2.Utilities
                         new Justification { Val = JustificationValues.Right }
                     ),
                      new Run(
-                         new RunProperties( new RunFonts() { ComplexScript = "Arial" },
-                                            new FontSizeComplexScript { Val = "32" },
+                         new RunProperties( new RunFonts() { ComplexScript = "PT Bold Heading" },
+                                            new FontSizeComplexScript { Val = "22" },
                                             new Languages() { Bidi = "ar-SA" },
                                             new Bold(),
                                             new BoldComplexScript(),
@@ -1046,10 +1515,9 @@ namespace WpfApp2.Utilities
                     ),
                      new Run(
                          new RunProperties(
-                                            new RunStyle { Val = "Strong" },
-                                            new RunFonts { Ascii = "Arial", HighAnsi = "Arial", ComplexScript = "Arial" },
-                                            new FontSize { Val = "32" },
-                                            new FontSizeComplexScript { Val = "32" },
+                                            new RunFonts { Ascii = "PT Bold Heading", HighAnsi = "PT Bold Heading", ComplexScript = "PT Bold Heading" },
+                                            new FontSize { Val = "22" },
+                                            new FontSizeComplexScript { Val = "22" },
                                             new Languages() { Bidi = "ar-SA" },
                                             new Bold(),
                                             new BoldComplexScript(),
